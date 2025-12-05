@@ -2,8 +2,8 @@ CROSS_COMPILE=riscv64-linux-gnu-
 BUILD_DIR=build
 BIN_NAME=kernel
 LINKER_NAME=linker.ld
-LINK_OPTIONS=--no-dynamic-linker -m elf64lriscv -static -nostdlib -s
-ASSEMBLER_OPTIONS=-march=rv64i -mabi=lp64
+LINK_OPTIONS=--no-dynamic-linker -m elf64lriscv -static -nostdlib
+ASSEMBLER_OPTIONS=-march=rv64i -mabi=lp64 -g
 
 $(BUILD_DIR)/$(BIN_NAME): $(BUILD_DIR)/$(BIN_NAME).o $(LINKER_NAME)
 	${CROSS_COMPILE}ld -T $(LINKER_NAME) $(LINK_OPTIONS) -o $@ $<
@@ -16,6 +16,9 @@ build:
 
 run:
 	qemu-system-riscv64 -machine virt -kernel $(BUILD_DIR)/$(BIN_NAME)
+
+debug:
+	qemu-system-riscv64 -machine virt -kernel $(BUILD_DIR)/$(BIN_NAME) -S -s
 
 clean:
 	rm -rf $(BUILD_DIR)
